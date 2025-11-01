@@ -1,4 +1,4 @@
-package br.com.scripta_api.usuario_service.usuario_service.model;
+package br.com.scripta_api.usuario_service.usuario_service.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
