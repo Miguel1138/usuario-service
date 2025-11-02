@@ -20,7 +20,8 @@ public record Usuario(
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(tipoDeConta.name()));
+        String role = "ROLE_" + tipoDeConta.name();
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
     @Override
