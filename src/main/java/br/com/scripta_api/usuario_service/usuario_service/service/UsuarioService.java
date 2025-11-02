@@ -38,18 +38,12 @@ public class UsuarioService {
         return usuarioRepository.save(novoUsuarioDomain);
     }
 
-    /**
-     * Lógica para buscar todos os usuários.
-     * (Assume que você implementou o 'findAll' no seu UsuarioRepository adapter)
-     */
     @Transactional(readOnly = true)
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    /**
-     * Lógica para buscar um usuário pela matrícula (usado pelo Controller)
-     */
+
     @Transactional(readOnly = true)
     public Usuario buscarPorMatricula(String matricula) {
         return usuarioRepository.findByMatricula(matricula)
