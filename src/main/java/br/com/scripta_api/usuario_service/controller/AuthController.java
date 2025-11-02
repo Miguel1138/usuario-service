@@ -1,10 +1,10 @@
-package br.com.scripta_api.usuario_service.usuario_service.controller;
+package br.com.scripta_api.usuario_service.controller;
 
 
-import br.com.scripta_api.usuario_service.usuario_service.domain.Usuario;
-import br.com.scripta_api.usuario_service.usuario_service.dto.LoginRequest;
-import br.com.scripta_api.usuario_service.usuario_service.dto.LoginResponse;
-import br.com.scripta_api.usuario_service.usuario_service.security.JwtTokenProvider;
+import br.com.scripta_api.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.dto.LoginRequest;
+import br.com.scripta_api.usuario_service.dto.LoginResponse;
+import br.com.scripta_api.usuario_service.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

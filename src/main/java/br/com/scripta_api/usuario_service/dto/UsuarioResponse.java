@@ -1,7 +1,7 @@
-package br.com.scripta_api.usuario_service.usuario_service.dto;
+package br.com.scripta_api.usuario_service.dto;
 
-import br.com.scripta_api.usuario_service.usuario_service.domain.TipoDeConta;
-import br.com.scripta_api.usuario_service.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.domain.TipoDeConta;
+import br.com.scripta_api.usuario_service.domain.Usuario;
 import lombok.Builder;
 import lombok.Data;
 

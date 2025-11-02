@@ -1,7 +1,7 @@
-package br.com.scripta_api.usuario_service.usuario_service.repository.mapper;
+package br.com.scripta_api.usuario_service.repository.mapper;
 
-import br.com.scripta_api.usuario_service.usuario_service.data.UsuarioEntity;
-import br.com.scripta_api.usuario_service.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.data.UsuarioEntity;
+import br.com.scripta_api.usuario_service.domain.Usuario;
 import org.springframework.stereotype.Component;
 
 @Component

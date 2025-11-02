@@ -1,4 +1,4 @@
-package br.com.scripta_api.usuario_service.usuario_service.dto;
+package br.com.scripta_api.usuario_service.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

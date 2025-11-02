@@ -1,9 +1,9 @@
-package br.com.scripta_api.usuario_service.usuario_service.controller;
+package br.com.scripta_api.usuario_service.controller;
 
-import br.com.scripta_api.usuario_service.usuario_service.domain.Usuario;
-import br.com.scripta_api.usuario_service.usuario_service.dto.CriarUsuarioRequest;
-import br.com.scripta_api.usuario_service.usuario_service.dto.UsuarioResponse;
-import br.com.scripta_api.usuario_service.usuario_service.service.UsuarioService;
+import br.com.scripta_api.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.dto.CriarUsuarioRequest;
+import br.com.scripta_api.usuario_service.dto.UsuarioResponse;
+import br.com.scripta_api.usuario_service.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

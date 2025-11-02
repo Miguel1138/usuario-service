@@ -1,4 +1,4 @@
-package br.com.scripta_api.usuario_service.usuario_service;
+package br.com.scripta_api.usuario_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

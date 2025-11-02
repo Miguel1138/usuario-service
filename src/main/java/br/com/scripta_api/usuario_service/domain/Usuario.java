@@ -1,4 +1,4 @@
-package br.com.scripta_api.usuario_service.usuario_service.domain;
+package br.com.scripta_api.usuario_service.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,9 +14,6 @@ public record Usuario(
         String senha,
         TipoDeConta tipoDeConta
 ) implements UserDetails {
-
-    public Usuario {
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,9 +1,10 @@
-package br.com.scripta_api.usuario_service.usuario_service.security;
+package br.com.scripta_api.usuario_service.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ public class JwtTokenProvider {
      * Construtor que injeta os valores do application.properties.
      * Ele também converte a string 'jwt.secret' em uma chave criptográfica real (Key).
      */
+    @Autowired
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secretString,
             @Value("${jwt.expiration-ms}") long jwtExpirationMs

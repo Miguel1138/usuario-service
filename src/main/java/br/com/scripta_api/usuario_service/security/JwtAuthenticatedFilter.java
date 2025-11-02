@@ -1,4 +1,4 @@
-package br.com.scripta_api.usuario_service.usuario_service.security;
+package br.com.scripta_api.usuario_service.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

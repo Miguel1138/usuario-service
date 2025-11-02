@@ -1,6 +1,6 @@
-package br.com.scripta_api.usuario_service.usuario_service.config;
+package br.com.scripta_api.usuario_service.config;
 
-import br.com.scripta_api.usuario_service.usuario_service.security.JwtAuthenticatedFilter;
+import br.com.scripta_api.usuario_service.security.JwtAuthenticatedFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

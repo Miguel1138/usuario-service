@@ -1,8 +1,8 @@
-package br.com.scripta_api.usuario_service.usuario_service.service;
+package br.com.scripta_api.usuario_service.service;
 
-import br.com.scripta_api.usuario_service.usuario_service.domain.Usuario;
-import br.com.scripta_api.usuario_service.usuario_service.dto.CriarUsuarioRequest;
-import br.com.scripta_api.usuario_service.usuario_service.repository.UsuarioRepository;
+import br.com.scripta_api.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.dto.CriarUsuarioRequest;
+import br.com.scripta_api.usuario_service.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
