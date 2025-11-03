@@ -46,7 +46,10 @@ A arquitetura do projeto foca na separação de responsabilidades (princípios *
     <!-- end list -->
 
     ```bash
-    DB_USERS=nome_do_seu_banco_de_dados;POSTGRE_USERNAME=seu_usuario_postgre;POSTGRE_PASSWORD=sua_senha_postgre;JWT_SECRECT_KEY=sua_chave_secreta_aqui
+    DB_USERS=nome_do_seu_banco_de_dados;
+    POSTGRE_USERNAME=seu_usuario_postgre;
+    POSTGRE_PASSWORD=sua_senha_postgre;
+    JWT_SECRECT_KEY=sua_chave_secreta_aqui
     ```
 
       * Clique em "OK" para salvar.
