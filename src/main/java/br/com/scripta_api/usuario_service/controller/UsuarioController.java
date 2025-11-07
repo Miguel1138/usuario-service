@@ -1,7 +1,7 @@
 package br.com.scripta_api.usuario_service.controller;
 
 import br.com.scripta_api.usuario_service.application.domain.Usuario;
-import br.com.scripta_api.usuario_service.application.service.UsuarioService;
+import br.com.scripta_api.usuario_service.application.gateways.service.UsuarioService;
 import br.com.scripta_api.usuario_service.dto.CriarUsuarioRequest;
 import br.com.scripta_api.usuario_service.dto.UsuarioResponse;
 import jakarta.validation.Valid;

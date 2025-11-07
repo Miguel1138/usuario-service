@@ -7,7 +7,15 @@ public class Usuario {
     private String senha;
     private TipoDeConta tipoDeConta;
 
-    private Usuario() {
+    public Usuario() {
+    }
+
+    public Usuario(Usuario usuario) {
+        this.id = usuario.getId();
+        this.nome = usuario.getNome();
+        this.matricula = usuario.getMatricula();
+        this.senha = usuario.getSenha();
+        this.tipoDeConta = usuario.getTipoDeConta();
     }
 
     public Long getId() {
