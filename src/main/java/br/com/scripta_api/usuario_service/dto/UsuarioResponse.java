@@ -1,7 +1,7 @@
 package br.com.scripta_api.usuario_service.dto;
 
-import br.com.scripta_api.usuario_service.domain.TipoDeConta;
-import br.com.scripta_api.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.domain.TipoDeConta;
+import br.com.scripta_api.usuario_service.application.domain.Usuario;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,10 +15,10 @@ public class UsuarioResponse {
 
     public static UsuarioResponse fromDomain(Usuario usuario) {
         return UsuarioResponse.builder()
-                .id(usuario.id())
-                .nome(usuario.nome())
-                .matricula(usuario.matricula())
-                .tipoDeConta(usuario.tipoDeConta())
+                .id(usuario.getId())
+                .nome(usuario.getNome())
+                .matricula(usuario.getMatricula())
+                .tipoDeConta(usuario.getTipoDeConta())
                 .build();
     }
 
