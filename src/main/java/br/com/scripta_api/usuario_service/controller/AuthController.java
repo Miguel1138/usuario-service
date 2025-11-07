@@ -1,7 +1,7 @@
 package br.com.scripta_api.usuario_service.controller;
 
 
-import br.com.scripta_api.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.gateways.CustomUsuarioDetails;
 import br.com.scripta_api.usuario_service.dto.LoginRequest;
 import br.com.scripta_api.usuario_service.dto.LoginResponse;
 import br.com.scripta_api.usuario_service.security.JwtTokenProvider;
@@ -36,7 +36,7 @@ public class AuthController {
         );
 
         // 2. Se a autenticação for bem-sucedida, pegamos o usuário (nosso modelo Usuario)
-        Usuario usuario = (Usuario) authentication.getPrincipal();
+        CustomUsuarioDetails usuario = (CustomUsuarioDetails) authentication.getPrincipal();
 
         // 3. Geramos o Token JWT
         String token = jwtTokenProvider.gerarToken(usuario);

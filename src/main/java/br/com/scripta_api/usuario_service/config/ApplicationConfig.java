@@ -1,5 +1,6 @@
 package br.com.scripta_api.usuario_service.config;
 
+import br.com.scripta_api.usuario_service.application.gateways.CustomUsuarioDetails;
 import br.com.scripta_api.usuario_service.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,13 +20,13 @@ public class ApplicationConfig {
     private final UsuarioRepository usuarioRepository;
 
     /**
-     * Bean 1: UserDetailsService
      * Define COMO o Spring carrega um usuário.
      * Ele usa nosso adapter (UsuarioRepository) que retorna o modelo de domínio (Usuario).
+     * @return matricula
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        return matricula -> usuarioRepository.findByMatricula(matricula)
+        return matricula -> (CustomUsuarioDetails) usuarioRepository.buscarPorMatricula(matricula)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + matricula));
     }
 
