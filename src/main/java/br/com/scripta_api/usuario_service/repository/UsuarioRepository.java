@@ -1,7 +1,7 @@
 package br.com.scripta_api.usuario_service.repository;
 
 import br.com.scripta_api.usuario_service.application.domain.Usuario;
-import br.com.scripta_api.usuario_service.application.service.UsuarioService;
+import br.com.scripta_api.usuario_service.application.gateways.service.UsuarioService;
 import br.com.scripta_api.usuario_service.infra.data.UsuarioEntity;
 import br.com.scripta_api.usuario_service.infra.gateways.UsuarioEntityRepository;
 import br.com.scripta_api.usuario_service.repository.mapper.UsuarioMapper;

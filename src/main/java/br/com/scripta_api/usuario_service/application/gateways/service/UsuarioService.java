@@ -1,4 +1,4 @@
-package br.com.scripta_api.usuario_service.application.service;
+package br.com.scripta_api.usuario_service.application.gateways.service;
 
 import br.com.scripta_api.usuario_service.application.domain.Usuario;
 import jakarta.validation.Valid;
