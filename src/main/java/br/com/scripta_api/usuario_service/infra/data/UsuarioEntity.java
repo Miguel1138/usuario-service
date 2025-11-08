@@ -1,6 +1,6 @@
-package br.com.scripta_api.usuario_service.data;
+package br.com.scripta_api.usuario_service.infra.data;
 
-import br.com.scripta_api.usuario_service.domain.TipoDeConta;
+import br.com.scripta_api.usuario_service.application.domain.TipoDeConta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

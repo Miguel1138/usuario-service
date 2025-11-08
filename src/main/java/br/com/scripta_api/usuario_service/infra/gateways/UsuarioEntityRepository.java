@@ -1,6 +1,6 @@
-package br.com.scripta_api.usuario_service.repository;
+package br.com.scripta_api.usuario_service.infra.gateways;
 
-import br.com.scripta_api.usuario_service.data.UsuarioEntity;
+import br.com.scripta_api.usuario_service.infra.data.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

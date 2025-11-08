@@ -1,9 +1,10 @@
 package br.com.scripta_api.usuario_service.controller;
 
-import br.com.scripta_api.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.domain.UsuarioBuilder;
+import br.com.scripta_api.usuario_service.application.gateways.service.UsuarioService;
 import br.com.scripta_api.usuario_service.dto.CriarUsuarioRequest;
 import br.com.scripta_api.usuario_service.dto.UsuarioResponse;
-import br.com.scripta_api.usuario_service.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,14 @@ public class UsuarioController {
      */
     @PostMapping
     public ResponseEntity<UsuarioResponse> criarUsuario(@Valid @RequestBody CriarUsuarioRequest request) {
-        Usuario novoUsuario = usuarioService.criarUsuario(request);
+        Usuario usuarioRequest = UsuarioBuilder.builder()
+                .nome(request.getNome())
+                .matricula(request.getMatricula())
+                .senha(request.getSenha())
+                .tipoDeConta(request.getTipoDeConta())
+                .build();
+        ;
+        Usuario novoUsuario = usuarioService.criarUsuario(usuarioRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(UsuarioResponse.fromDomain(novoUsuario));
     }
@@ -49,10 +57,8 @@ public class UsuarioController {
      */
     @GetMapping("/me")
     public ResponseEntity<UsuarioResponse> getMeuPerfil(Authentication authentication) {
-        // O 'authentication' é injetado pelo Spring Security
-        // 'authentication.getName()' retorna a matrícula (o 'username' que definimos)
         String matricula = authentication.getName();
-        Usuario usuario = usuarioService.buscarPorMatricula(matricula);
+        Usuario usuario = usuarioService.buscarPorMatricula(matricula).orElseThrow();
         return ResponseEntity.ok(UsuarioResponse.fromDomain(usuario));
     }
 }
