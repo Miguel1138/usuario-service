@@ -1,6 +1,6 @@
 package br.com.scripta_api.usuario_service.dto;
 
-import br.com.scripta_api.usuario_service.domain.TipoDeConta;
+import br.com.scripta_api.usuario_service.application.domain.TipoDeConta;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
