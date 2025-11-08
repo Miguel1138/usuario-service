@@ -7,10 +7,10 @@ public class Usuario {
     private String senha;
     private TipoDeConta tipoDeConta;
 
-    public Usuario() {
+    protected Usuario() {
     }
 
-    public Usuario(Usuario usuario) {
+    protected Usuario(Usuario usuario) {
         this.id = usuario.getId();
         this.nome = usuario.getNome();
         this.matricula = usuario.getMatricula();
@@ -57,61 +57,4 @@ public class Usuario {
     public void setTipoDeConta(TipoDeConta tipoDeConta) {
         this.tipoDeConta = tipoDeConta;
     }
-
-    public static class builder {
-        private final Usuario usuario;
-
-        public builder() {
-            usuario = new Usuario();
-        }
-
-        public builder id(Long id) {
-            usuario.setId(id);
-            return this;
-        }
-
-        public builder nome(String nome) {
-            usuario.setNome(nome);
-            return this;
-        }
-
-        public builder matricula(String matricula) {
-            usuario.setMatricula(matricula);
-            return this;
-        }
-
-        public builder senha(String senha) {
-            usuario.setSenha(senha);
-            return this;
-        }
-
-        public builder tipoDeConta(TipoDeConta tipoDeConta) {
-            usuario.setTipoDeConta(tipoDeConta);
-            return this;
-        }
-
-        public Usuario build() {
-            if (usuario.getSenha() == null || usuario.getSenha().isBlank()) {
-                throw new IllegalArgumentException("Senha não pode ser nula");
-            }
-            if (usuario.getSenha().length() < 10) {
-                throw new IllegalArgumentException("Senha deve ter no mínimo 10 caracteres");
-            }
-            if (usuario.getNome() == null || usuario.getNome().isBlank()) {
-                throw new IllegalArgumentException("Nome não pode ser nulo");
-            }
-            if (usuario.getId() == null) {
-                throw new IllegalArgumentException("Id não pode ser nulo");
-            }
-            if (usuario.getTipoDeConta() == null) {
-                throw new IllegalArgumentException("Tipo de conta não pode ser nulo");
-            }
-            if (usuario.getMatricula() == null || usuario.getMatricula().isEmpty()) {
-                throw new IllegalArgumentException("Matrícula não pode ser nula");
-            }
-
-            return usuario;
-        }
-    }
-
 }

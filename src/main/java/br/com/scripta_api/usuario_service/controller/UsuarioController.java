@@ -1,6 +1,7 @@
 package br.com.scripta_api.usuario_service.controller;
 
 import br.com.scripta_api.usuario_service.application.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.domain.UsuarioBuilder;
 import br.com.scripta_api.usuario_service.application.gateways.service.UsuarioService;
 import br.com.scripta_api.usuario_service.dto.CriarUsuarioRequest;
 import br.com.scripta_api.usuario_service.dto.UsuarioResponse;
@@ -25,7 +26,7 @@ public class UsuarioController {
      */
     @PostMapping
     public ResponseEntity<UsuarioResponse> criarUsuario(@Valid @RequestBody CriarUsuarioRequest request) {
-        Usuario usuarioRequest = new Usuario.builder()
+        Usuario usuarioRequest = UsuarioBuilder.builder()
                 .nome(request.getNome())
                 .matricula(request.getMatricula())
                 .senha(request.getSenha())
