@@ -1,53 +1,115 @@
 package br.com.scripta_api.usuario_service.security;
 
-
-import br.com.scripta_api.usuario_service.domain.TipoDeConta;
-import br.com.scripta_api.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.domain.TipoDeConta;
+import br.com.scripta_api.usuario_service.application.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.domain.UsuarioBuilder;
+import br.com.scripta_api.usuario_service.application.gateways.CustomUsuarioDetails;
+import io.jsonwebtoken.ExpiredJwtException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class JwtTokenProviderTest {
 
-    @Test
-    @DisplayName("gerarToken inclui subject (matrícula) e roles e valida corretamente")
-    void gerarTokenEValidar() {
-        String secret = "minha-chave-secreta-de-teste-que-precisa-ter-um-tamanho-bom-para-hmac";
-        long expirationMs = 60_000; // 1 min
-        JwtTokenProvider provider = new JwtTokenProvider(secret, expirationMs);
+    private JwtTokenProvider tokenProvider;
+    private CustomUsuarioDetails userDetails;
 
-        UserDetails usuario = new Usuario(1L, "Fulano", "12345", "hash", TipoDeConta.BIBLIOTECARIO);
+    // Use valores fixos para teste
+    private final String secret = "minhaChaveSecretaSuperLongaParaTestesUnitarios123456";
+    private final long validExpiration = 3600000; // 1 hora
+    private final long expiredExpiration = -1000; // Já expirado
 
-        String token = provider.gerarToken(usuario);
-        assertNotNull(token);
-
-        // Subject deve ser a matrícula
-        String subject = provider.extrairMatricula(token);
-        assertEquals("12345", subject);
-
-        // Token deve ser válido para o usuário
-        assertTrue(provider.isTokenValido(token, usuario));
-
-        // E não deve estar expirado
-        Date exp = provider.extrairExpiracao(token);
-        assertTrue(exp.after(new Date()));
+    @BeforeEach
+    void setUp() {
+        // Configura um usuário padrão para os testes
+        Usuario usuario = UsuarioBuilder.builder()
+                .id(1L).nome("Usuario Teste").matricula("123456")
+                .senha("senha123456789").tipoDeConta(TipoDeConta.BIBLIOTECARIO)
+                .build();
+        userDetails = new CustomUsuarioDetails(usuario);
     }
 
     @Test
-    @DisplayName("token expirado não é válido")
-    void tokenExpirado() throws InterruptedException {
-        String secret = "minha-chave-secreta-de-teste-que-precisa-ter-um-tamanho-bom-para-hmac";
-        long expirationMs = 5; // expira muito rápido
-        JwtTokenProvider provider = new JwtTokenProvider(secret, expirationMs);
+    @DisplayName("Deve gerar um token válido e extrair a matrícula")
+    void deveGerarTokenEExtrairMatricula() {
+        // Arrange
+        tokenProvider = new JwtTokenProvider(secret, validExpiration);
 
-        UserDetails usuario = new Usuario(1L, "Fulano", "12345", "hash", TipoDeConta.BIBLIOTECARIO);
-        String token = provider.gerarToken(usuario);
+        // Act
+        String token = tokenProvider.gerarToken(userDetails);
+        String matriculaExtraida = tokenProvider.extrairMatricula(token);
 
-        Thread.sleep(10);
-        assertThrows(Exception.class, () -> provider.isTokenValido(token, usuario));
+        // Assert
+        assertNotNull(token);
+        assertEquals("123456", matriculaExtraida);
+    }
+
+    @Test
+    @DisplayName("Deve validar um token com sucesso")
+    void deveValidarTokenComSucesso() {
+        // Arrange
+        tokenProvider = new JwtTokenProvider(secret, validExpiration);
+        String token = tokenProvider.gerarToken(userDetails);
+
+        // Act
+        boolean isValido = tokenProvider.isTokenValido(token, userDetails);
+
+        // Assert
+        assertTrue(isValido);
+    }
+
+    @Test
+    @DisplayName("Não deve validar um token expirado")
+    void naoDeveValidarTokenExpirado() {
+        // Arrange
+        tokenProvider = new JwtTokenProvider(secret, expiredExpiration);
+        String tokenExpirado = tokenProvider.gerarToken(userDetails);
+
+        // Act & Assert
+        // A validação de expiração acontece ao tentar extrair qualquer claim
+        assertThrows(ExpiredJwtException.class, () -> {
+            tokenProvider.isTokenValido(tokenExpirado, userDetails);
+        });
+    }
+
+    @Test
+    @DisplayName("Não deve validar um token de outro usuário")
+    void naoDeveValidarTokenDeOutroUsuario() {
+        // Arrange
+        tokenProvider = new JwtTokenProvider(secret, validExpiration);
+        String token = tokenProvider.gerarToken(userDetails); // Token para '123456'
+
+        // Cria um UserDetails diferente
+        Usuario outroUsuario = UsuarioBuilder.builder()
+                .id(2L).nome("Outro").matricula("987654")
+                .senha("senha123456789").tipoDeConta(TipoDeConta.ALUNO)
+                .build();
+        UserDetails outroUserDetails = new CustomUsuarioDetails(outroUsuario);
+
+        // Act
+        boolean isValido = tokenProvider.isTokenValido(token, outroUserDetails);
+
+        // Assert
+        assertFalse(isValido); // Username não bate (123456 != 987654)
+    }
+
+    @Test
+    @DisplayName("Não deve validar um token com assinatura inválida")
+    void naoDeveValidarTokenComAssinaturaInvalida() {
+        // Arrange
+        tokenProvider = new JwtTokenProvider(secret, validExpiration);
+        String token = tokenProvider.gerarToken(userDetails);
+
+        // Cria um token provider com outra chave secreta
+        JwtTokenProvider providerInvalido = new JwtTokenProvider("outraChaveSecretaMuitoDiferente123456", validExpiration);
+
+        // Act & Assert
+        // Ao tentar decodificar com a chave errada, ele falha
+        assertThrows(io.jsonwebtoken.security.SignatureException.class, () -> {
+            providerInvalido.isTokenValido(token, userDetails);
+        });
     }
 }

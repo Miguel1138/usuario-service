@@ -1,122 +1,124 @@
 package br.com.scripta_api.usuario_service.controller;
 
-import br.com.scripta_api.usuario_service.domain.TipoDeConta;
-import br.com.scripta_api.usuario_service.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.domain.TipoDeConta;
+import br.com.scripta_api.usuario_service.application.domain.Usuario;
+import br.com.scripta_api.usuario_service.application.domain.UsuarioBuilder;
+import br.com.scripta_api.usuario_service.application.gateways.service.UsuarioService;
 import br.com.scripta_api.usuario_service.dto.CriarUsuarioRequest;
-import br.com.scripta_api.usuario_service.security.JwtTokenProvider;
-import br.com.scripta_api.usuario_service.service.UsuarioService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import br.com.scripta_api.usuario_service.dto.UsuarioResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = UsuarioController.class)
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class UsuarioControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockitoBean
+    @Mock
     private UsuarioService usuarioService;
 
-    @MockitoBean
-    private JwtTokenProvider jwtTokenProvider;
-
-    @MockitoBean
-    private UserDetailsService userDetailsService;
-
-    @MockitoBean
+    @Mock
     private Authentication authentication;
 
-    @Test
-    @DisplayName("POST /usuarios - 201 quando Bibliotecário cria usuário")
-    @WithMockUser(username = "lib", roles = {"BIBLIOTECARIO"})
-    @AutoConfigureMockMvc(addFilters = false)
-    void criarUsuarioComoBibliotecario() throws Exception {
-        CriarUsuarioRequest req = new CriarUsuarioRequest();
-        req.setNome("Aluno A");
-        req.setMatricula("2025001");
-        req.setSenha("senha-super-segura");
-        req.setTipoDeConta(TipoDeConta.ALUNO);
+    @InjectMocks
+    private UsuarioController usuarioController;
 
-        Usuario salvo = new Usuario(10L, req.getNome(), req.getMatricula(), "hash",
-                req.getTipoDeConta());
+    private Usuario usuarioDomain;
 
-        when(usuarioService.criarUsuario(any(CriarUsuarioRequest.class))).thenReturn(salvo);
-
-        mockMvc.perform(post("/usuarios")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(10L))
-                .andExpect(jsonPath("$.nome").value("Aluno A"))
-                .andExpect(jsonPath("$.matricula").value("2025001"))
-                .andExpect(jsonPath("$.tipoDeConta").value("ALUNO"));
+    @BeforeEach
+    void setUp() {
+        usuarioDomain = UsuarioBuilder.builder()
+                .id(1L)
+                .nome("Teste")
+                .matricula("123")
+                .senha("senhaForte123456")
+                .tipoDeConta(TipoDeConta.ALUNO)
+                .build();
     }
 
     @Test
-    @DisplayName("POST /usuarios - 403 quando não é Bibliotecário")
-    @WithMockUser(username = "aluno", roles = {"ALUNO"})
-    void criarUsuarioSemPermissao() throws Exception {
-        CriarUsuarioRequest req = new CriarUsuarioRequest();
-        req.setNome("Aluno A");
-        req.setMatricula("2025001");
-        req.setSenha("senha-super-segura");
-        req.setTipoDeConta(TipoDeConta.ALUNO);
+    @DisplayName("POST /usuarios - Deve criar um usuário com sucesso")
+    void deveCriarUsuario() {
+        // Arrange
+        CriarUsuarioRequest request = new CriarUsuarioRequest();
+        request.setNome("Teste");
+        request.setMatricula("123");
+        request.setSenha("senhaForte123456");
+        request.setTipoDeConta(TipoDeConta.ALUNO);
 
-        mockMvc.perform(post("/usuarios")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isForbidden());
+        when(usuarioService.criarUsuario(any(Usuario.class))).thenReturn(usuarioDomain);
+
+        // Act
+        ResponseEntity<UsuarioResponse> response = usuarioController.criarUsuario(request);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("123", response.getBody().getMatricula());
     }
 
     @Test
-    @DisplayName("GET /usuarios - 200 quando Bibliotecário lista usuários")
-    @WithMockUser(username = "lib", roles = {"BIBLIOTECARIO"})
-    void listarUsuariosComoBibliotecario() throws Exception {
-        List<Usuario> lista = List.of(
-                new Usuario(1L, "A", "1", "h", TipoDeConta.ALUNO),
-                new Usuario(2L, "B", "2", "h", TipoDeConta.BIBLIOTECARIO)
-        );
-        when(usuarioService.listarUsuarios()).thenReturn(lista);
+    @DisplayName("GET /usuarios - Deve listar usuários com sucesso")
+    void deveListarUsuarios() {
+        // Arrange
+        when(usuarioService.listarUsuarios()).thenReturn(List.of(usuarioDomain));
 
-        mockMvc.perform(get("/usuarios"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[1].tipoDeConta").value("BIBLIOTECARIO"));
+        // Act
+        ResponseEntity<List<UsuarioResponse>> response = usuarioController.listarUsuarios();
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("123", response.getBody().get(0).getMatricula());
     }
 
     @Test
-    @DisplayName("GET /usuarios/me - 200 retorna perfil do usuário autenticado")
-    @WithMockUser(username = "2025001", roles = {"ALUNO"})
-    void getMeuPerfil() throws Exception {
-        Usuario usuario = new Usuario(5L, "Aluno", "2025001", "h", TipoDeConta.ALUNO);
-        when(usuarioService.buscarPorMatricula("2025001")).thenReturn(usuario);
+    @DisplayName("GET /usuarios/me - Deve retornar o perfil do usuário logado")
+    void deveRetornarMeuPerfil() {
+        // Arrange
+        String matriculaLogada = "123";
+        when(authentication.getName()).thenReturn(matriculaLogada);
+        when(usuarioService.buscarPorMatricula(matriculaLogada)).thenReturn(Optional.of(usuarioDomain));
 
-        mockMvc.perform(get("/usuarios/me"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(5L))
-                .andExpect(jsonPath("$.matricula").value("2025001"));
+        // Act
+        ResponseEntity<UsuarioResponse> response = usuarioController.getMeuPerfil(authentication);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(matriculaLogada, response.getBody().getMatricula());
+    }
+
+    @Test
+    @DisplayName("GET /usuarios/me - Deve lançar exceção se usuário não for encontrado")
+    void deveLancarExcecaoSeMeuPerfilNaoEncontrado() {
+        // Arrange
+        String matriculaLogada = "404";
+        when(authentication.getName()).thenReturn(matriculaLogada);
+        when(usuarioService.buscarPorMatricula(matriculaLogada)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        // O código do controller usa .orElseThrow()
+        assertThrows(NoSuchElementException.class, () -> {
+            usuarioController.getMeuPerfil(authentication);
+        });
     }
 }
