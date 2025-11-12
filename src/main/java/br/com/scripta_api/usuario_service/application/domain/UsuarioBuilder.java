@@ -46,9 +46,6 @@ public final class UsuarioBuilder {
         if (usuario.getNome() == null || usuario.getNome().isBlank()) {
             throw new IllegalArgumentException("Nome não pode ser nulo");
         }
-        if (usuario.getId() == null) {
-            throw new IllegalArgumentException("Id não pode ser nulo");
-        }
         if (usuario.getTipoDeConta() == null) {
             throw new IllegalArgumentException("Tipo de conta não pode ser nulo");
         }
