@@ -26,7 +26,8 @@ public class ApplicationConfig {
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        return matricula -> (CustomUsuarioDetails) usuarioRepository.buscarPorMatricula(matricula)
+        return matricula -> usuarioRepository.buscarPorMatricula(matricula)
+                .map(CustomUsuarioDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + matricula));
     }
 
