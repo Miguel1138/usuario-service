@@ -34,7 +34,7 @@ class ApplicationConfigTest {
     @BeforeEach
     void setUp() {
         // Instancia o bean manualmente para testar a sua lógica
-        userDetailsService = applicationConfig.userDetailsService();
+        userDetailsService = applicationConfig.userDetailsService(usuarioRepository);
     }
 
     @Test
