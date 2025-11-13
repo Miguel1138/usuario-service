@@ -20,7 +20,9 @@ A aplicação é construída em **Java 21** com **Spring Boot 3.5.7** e utiliza 
 
 ## Arquitetura (Design)
 
-A arquitetura do projeto foca na separação de responsabilidades (princípios **SOLID**). Ela separa o modelo de **Domínio** (o `record Usuario`, que implementa `UserDetails`) da camada de **Dados** (a `@Entity` `UsuarioEntity`). A camada de `Repository` atua como um **Adapter**, usando um `UsuarioMapper` para traduzir entre o domínio e a entidade, desacoplando o serviço (`UsuarioService`) da implementação do JPA. A segurança é **Stateless** (sem sessão), gerenciada por Spring Security. Um `JwtAuthenticatedFilter` intercepta requisições, enquanto o `JwtTokenProvider` valida tokens JWT para autenticação.
+A arquitetura do projeto foca na separação de responsabilidades (princípios **SOLID**). Ela separa o modelo de **Domínio** (a classe `Usuario`) da camada de **Dados** (a `@Entity` `UsuarioEntity`). A integração com o Spring Security é feita de forma desacoplada através da classe `CustomUsuarioDetails`, que implementa `UserDetails` e encapsula o objeto `Usuario`.
+
+A camada de `Repository` (`UsuarioRepository`) atua como um **Adapter**, implementando a interface de serviço (`UsuarioService`) e usando um `UsuarioMapper` para traduzir entre o domínio e a entidade. Isso desacopla a lógica de negócio da implementação do JPA. A segurança é **Stateless** (sem sessão), gerenciada por Spring Security. Um `JwtAuthenticatedFilter` intercepta requisições, enquanto o `JwtTokenProvider` valida tokens JWT para autenticação.
 
 ## Configuração e Execução (IntelliJ IDEA)
 
