@@ -22,7 +22,7 @@ public class UsuarioRepository implements UsuarioService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    @Transactional()
+    @Transactional
     public Usuario criarUsuario(Usuario usuarioDomain) {
         String encryptPassword = passwordEncoder.encode(usuarioDomain.getSenha());
         usuarioDomain.setSenha(encryptPassword);
