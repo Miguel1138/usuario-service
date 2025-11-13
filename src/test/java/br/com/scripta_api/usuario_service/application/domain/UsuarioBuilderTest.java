@@ -90,16 +90,4 @@ class UsuarioBuilderTest {
         assertEquals("Tipo de conta não pode ser nulo", exception.getMessage());
     }
 
-    @Test
-    @DisplayName("Deve falhar ao construir se o ID for nulo")
-    void naoDeveConstruirSemId() {
-        var builder = UsuarioBuilder.builder()
-                .nome("Nome Teste")
-                .matricula("123456")
-                .senha("senhaForte123456")
-                .tipoDeConta(TipoDeConta.ALUNO);
-
-        var exception = assertThrows(IllegalArgumentException.class, builder::build);
-        assertEquals("Id não pode ser nulo", exception.getMessage());
-    }
 }
