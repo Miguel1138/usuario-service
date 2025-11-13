@@ -1,6 +1,7 @@
 package br.com.scripta_api.usuario_service.config;
 
 import br.com.scripta_api.usuario_service.security.JwtAuthenticatedFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -52,19 +51,13 @@ public class SecurityConfig {
                 // 5. Adicionar nosso filtro JWT
                 // Ele deve rodar ANTES do filtro padrão do Spring,
                 // para que possamos validar o token e configurar o contexto de segurança.
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(e -> e.authenticationEntryPoint((
+                        (request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Não autorizado")))
+                );
 
         return http.build();
-    }
-
-    /**
-     * Bean 2: PasswordEncoder
-     * Define o algoritmo para hashear senhas.
-     * DEVE estar aqui para evitar dependência circular com o SecurityConfig.
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
 }

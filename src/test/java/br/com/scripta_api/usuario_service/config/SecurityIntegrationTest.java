@@ -108,7 +108,7 @@ class SecurityIntegrationTest {
     @DisplayName("GET /usuarios/me - Deve bloquear (401) se não estiver autenticado")
     void deveBloquearGetMeSemAutenticacao() throws Exception {
         mockMvc.perform(get("/usuarios/me"))
-                .andExpect(status().isUnauthorized()); // 401
+                .andExpect(status().isUnauthorized()); // 402
     }
 
     @Test
@@ -128,8 +128,7 @@ class SecurityIntegrationTest {
                 .build();
         usuarioService.criarUsuario(usuarioDeTeste);
 
-        // Vamos apenas verificar se fomos autenticados (não é 401 nem 403)
         mockMvc.perform(get("/usuarios/me"))
-                .andExpect(status().isInternalServerError()); // Prova que passou da segurança
+                .andExpect(status().isOk()); // Esperando 200
     }
 }
