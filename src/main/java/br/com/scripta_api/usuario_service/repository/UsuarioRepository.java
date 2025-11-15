@@ -6,6 +6,7 @@ import br.com.scripta_api.usuario_service.infra.data.UsuarioEntity;
 import br.com.scripta_api.usuario_service.infra.gateways.UsuarioEntityRepository;
 import br.com.scripta_api.usuario_service.repository.mapper.UsuarioMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +19,13 @@ import java.util.stream.Collectors;
 public class UsuarioRepository implements UsuarioService {
     private final UsuarioMapper mapper;
     private final UsuarioEntityRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public Usuario criarUsuario(Usuario usuarioDomain) {
+        String encryptPassword = passwordEncoder.encode(usuarioDomain.getSenha());
+        usuarioDomain.setSenha(encryptPassword);
         UsuarioEntity entity = mapper.toEntity(usuarioDomain);
         UsuarioEntity savedEntity = repository.save(entity);
         return mapper.toDomain(savedEntity);

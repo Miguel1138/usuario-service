@@ -1,6 +1,7 @@
 package br.com.scripta_api.usuario_service.config;
 
 import br.com.scripta_api.usuario_service.security.JwtAuthenticatedFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +51,11 @@ public class SecurityConfig {
                 // 5. Adicionar nosso filtro JWT
                 // Ele deve rodar ANTES do filtro padrão do Spring,
                 // para que possamos validar o token e configurar o contexto de segurança.
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(e -> e.authenticationEntryPoint((
+                        (request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Não autorizado")))
+                );
 
         return http.build();
     }

@@ -2,7 +2,6 @@ package br.com.scripta_api.usuario_service.config;
 
 import br.com.scripta_api.usuario_service.application.gateways.CustomUsuarioDetails;
 import br.com.scripta_api.usuario_service.repository.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,9 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UsuarioRepository usuarioRepository;
 
     /**
      * Define COMO o Spring carrega um usuário.
@@ -25,7 +22,7 @@ public class ApplicationConfig {
      * @return matricula
      */
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService(UsuarioRepository usuarioRepository) {
         return matricula -> usuarioRepository.buscarPorMatricula(matricula)
                 .map(CustomUsuarioDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + matricula));
@@ -47,10 +44,10 @@ public class ApplicationConfig {
      * É este Bean que o SecurityConfig injetará.
      */
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder, UsuarioRepository usuarioRepository) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userDetailsService(usuarioRepository));
+        authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
     }
 
